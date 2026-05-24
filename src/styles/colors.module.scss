@@ -1,0 +1,18 @@
+@use "./variables" as vars;
+
+:export {
+  bgPrimary: vars.$bg-primary;
+  bgSecondary: vars.$bg-secondary;
+  bgPanel: vars.$bg-panel;
+  
+  textPrimary: vars.$text-primary;
+  textInverse: vars.$text-inverse;
+  textMuted: vars.$text-muted;
+  
+  accentPrimary: vars.$accent-primary;
+  
+  statusSuccess: vars.$status-success;
+  statusWarning: vars.$status-warning;
+  statusError: vars.$status-error;
+  statusInfo: vars.$status-info;
+}

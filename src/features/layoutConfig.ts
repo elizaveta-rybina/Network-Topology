@@ -6,8 +6,8 @@ cytoscape.use(fcose);
 
 export const getFcoseLayoutConfig = (isFirstLoad: boolean, hasSavedPositions: boolean) => ({
   name: 'fcose',
-  animate: !isFirstLoad, 
-  animationDuration: 800,
+  animate: !isFirstLoad,
+  animationDuration: isFirstLoad ? 0 : 800,
   
   fit: true,
   padding: 50,

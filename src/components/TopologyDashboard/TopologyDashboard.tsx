@@ -92,7 +92,7 @@ export const TopologyDashboard = () => {
             className={styles.cyContainer} 
             style={{ 
               opacity: isGraphReady ? 1 : 0, 
-              transition: 'opacity 0.6s ease-in-out' 
+              transition: 'opacity 0.22s ease-out' 
             }} 
           />
          

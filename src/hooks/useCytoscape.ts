@@ -15,6 +15,7 @@ interface UseCytoscapeProps {
 export const useCytoscape = ({ containerRef, elements, theme = 'light', onElementClick }: UseCytoscapeProps) => {
   const cyRef = useRef<Core | null>(null);
   const [isGraphReady, setIsGraphReady] = useState(false);
+  const hasRenderedOnceRef = useRef(false);
   
   const onElementClickRef = useRef(onElementClick);
   useEffect(() => { onElementClickRef.current = onElementClick; }, [onElementClick]);
@@ -72,6 +73,11 @@ export const useCytoscape = ({ containerRef, elements, theme = 'light', onElemen
     const cy = cyRef.current;
     if (!cy) return;
 
+    const isInitialRender = !hasRenderedOnceRef.current;
+    if (isInitialRender) {
+      setIsGraphReady(false);
+    }
+
     const savedRaw = localStorage.getItem('topology_positions');
     const localPositions = savedRaw ? JSON.parse(savedRaw) : {};
 
@@ -112,6 +118,7 @@ export const useCytoscape = ({ containerRef, elements, theme = 'light', onElemen
 
     layout.on('layoutstop', () => {
       setIsGraphReady(true);
+      hasRenderedOnceRef.current = true;
     });
     
     layout.run();

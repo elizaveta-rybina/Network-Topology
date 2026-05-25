@@ -1,0 +1,82 @@
+@use "../../styles/variables" as vars;
+
+$header-height: 80px;
+$header-padding-x: 24px;
+$toolbar-gap: 12px;
+$toolbar-margin-left: 24px;
+$icon-button-size: 36px;
+$theme-icon-size: 16px;
+
+$radius-sm: 8px;
+
+$header-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+$button-hover-bg: rgba(255, 255, 255, 0.1);
+$divider-color: rgba(255, 255, 255, 0.2);
+
+$fast-transition: 0.2s ease-in-out;
+
+@mixin flex-center($justify: center) {
+  display: flex;
+  align-items: center;
+  justify-content: $justify;
+}
+
+.header {
+  position: relative;
+  z-index: 20;
+  @include flex-center(space-between);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: $header-height;
+  padding: 0 $header-padding-x;
+  background-color: vars.$bg-footer;
+  color: vars.$text-inverse;
+  box-shadow: $header-shadow;
+}
+
+.logo {
+  @include flex-center;
+  color: vars.$text-inverse;
+
+  img {
+    height: 32px;
+    width: auto;
+  }
+}
+
+.toolbar {
+  @include flex-center;
+  gap: $toolbar-gap;
+  margin-left: $toolbar-margin-left;
+}
+
+.iconButton {
+  @include flex-center;
+  width: $icon-button-size;
+  height: $icon-button-size;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: $radius-sm;
+  color: vars.$text-inverse;
+  cursor: pointer;
+  transition: all $fast-transition;
+
+  &:hover {
+    background-color: $button-hover-bg;
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: $divider-color;
+}
+
+.themeIcon {
+  width: $theme-icon-size;
+  height: $theme-icon-size;
+  display: block;
+  filter: invert(1);
+  opacity: 0.9;
+}

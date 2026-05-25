@@ -1,0 +1,135 @@
+@use "../../styles/variables" as vars;
+
+$sidebar-width: 320px;
+$sidebar-padding-vertical: 24px;
+$sidebar-padding-horizontal: 20px;
+$gap-large: 20px;
+$gap-medium: 16px;
+$gap-small: 12px;
+$gap-xs: 10px;
+$radius-sm: 6px;
+$checkbox-size: 18px;
+
+.sidebar {
+  width: $sidebar-width;
+  background-color: vars.$bg-secondary;
+  border-right: 1px solid vars.$bg-panel;
+  padding: $sidebar-padding-vertical $sidebar-padding-horizontal;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-large;
+  z-index: 5;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.title {
+  font-size: 1rem;
+  color: vars.$text-primary;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filtersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-medium;
+  flex: 1;
+}
+
+.stats {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid vars.$bg-panel;
+  color: vars.$text-muted;
+  font-size: 0.85rem;
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-small;
+}
+
+.filterLabel {
+  font-size: 0.85rem;
+  color: vars.$text-muted;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.checkboxList {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-xs;
+}
+
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  gap: $gap-xs;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: vars.$text-primary;
+  user-select: none;
+}
+
+.checkboxInput {
+  appearance: none;
+  width: $checkbox-size;
+  height: $checkbox-size;
+  border: 2px solid vars.$bg-panel;
+  border-radius: 4px;
+  background-color: vars.$bg-primary;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+
+  &:checked {
+    background-color: vars.$accent-primary;
+    border-color: vars.$accent-primary;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid vars.$text-inverse;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+.nodeInfoPanel {
+  background-color: vars.$bg-primary;
+  border: 1px solid vars.$bg-panel;
+  border-radius: $radius-sm;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-small;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: vars.$text-primary;
+
+  strong {
+    color: vars.$text-muted;
+    font-weight: 600;
+  }
+
+  span {
+    word-break: break-all;
+    line-height: 1.4;
+  }
+}

@@ -1,4 +1,4 @@
-export type NodeState = 'ok' | 'warning' | 'error' | 'info';
+export type NodeState = 'ok' | 'warning' | 'error';
 
 export interface ApiNode {
   id: string;

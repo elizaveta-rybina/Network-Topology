@@ -5,7 +5,7 @@ import { getFcoseLayoutConfig } from '../features/layoutConfig'
 import { getTopologyStyles } from '../styles/topologyStyles'
 
 interface UseCytoscapeProps {
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
   elements: ElementDefinition[];
 }
 

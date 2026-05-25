@@ -3,12 +3,22 @@ import { filterTopologyData } from '../../features/filterTopology'
 import { mapToCytoscapeElements } from '../../features/mapTopology'
 import { useCytoscape } from '../../hooks/useCytoscape'
 import { useTopologyData } from '../../hooks/useTopologyData'
+import type { ApiConnection, ApiNode, TopologyFilterOptions } from '../../types/topology'
 import { Header } from '../Header/Header'
+import { Sidebar } from '../SideBar/Sidebar'
 import styles from './TopologyDashboard.module.scss'
 
 export const TopologyDashboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  const [selectedElement, setSelectedElement] = useState<ApiNode | ApiConnection | null>(null);
+
+  const [filters, setFilters] = useState<TopologyFilterOptions>({
+    searchQuery: '',
+    states: [],
+    types: [],
+  });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -22,15 +32,21 @@ export const TopologyDashboard = () => {
 
   const cyElements = useMemo(() => {
     if (!data) return [];
-    const filters = {}; 
     const safeData = filterTopologyData(data, filters);
     return mapToCytoscapeElements(safeData);
-  }, [data]);
+  }, [data, filters]);
 
-  const { cyRef } = useCytoscape({
+  const { cyRef, isGraphReady } = useCytoscape({
     containerRef,
     elements: cyElements,
+    theme,
+    onElementClick: setSelectedElement,
   });
+
+  const handleFilterChange = useCallback((newFilters: TopologyFilterOptions) => {
+    setFilters(newFilters);
+    setSelectedElement(null); 
+  }, []);
 
   const handleZoomIn = useCallback(() => {
     const cy = cyRef.current;
@@ -62,17 +78,25 @@ export const TopologyDashboard = () => {
       />
 
       <div className={styles.workspace}>
-        <aside className={styles.sidebar}>
-          <div className={styles.sidebarTitle}>Управление</div>
-          <div style={{ color: '#acb2b9', fontSize: '0.9rem' }}>
-            {isLoading ? 'Загрузка...' : `Узлов: ${data?.nodes.length || 0}`}
-          </div>
-        </aside>
+        <Sidebar 
+          isLoading={isLoading} 
+          nodesCount={cyElements.filter(e => e.data && !e.data.source).length}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          selectedElement={selectedElement}
+        />
 
         <main className={styles.graphArea}>
-          <div ref={containerRef} className={styles.cyContainer} />
-
-          {isLoading && (
+          <div 
+            ref={containerRef} 
+            className={styles.cyContainer} 
+            style={{ 
+              opacity: isGraphReady ? 1 : 0, 
+              transition: 'opacity 0.6s ease-in-out' 
+            }} 
+          />
+         
+          {(isLoading || (data && !isGraphReady)) && (
             <div className={styles.overlay}>Загрузка топологии...</div>
           )}
           {error && (

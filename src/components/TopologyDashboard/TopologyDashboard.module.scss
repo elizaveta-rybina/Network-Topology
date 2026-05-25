@@ -28,19 +28,6 @@ $overlay-font-size: 1.2rem;
   min-width: 0;
 }
 
-.sidebar {
-  width: $sidebar-width;
-  background-color: vars.$bg-secondary;
-  border-right: 1px solid $sidebar-border-color;
-  padding: $sidebar-padding;
-  display: flex;
-  flex-direction: column;
-  gap: $sidebar-gap;
-  z-index: 5;
-}
-
-.sidebarTitle { font-size: 1rem; color: vars.$text-primary; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
-
 .graphArea { flex: 1 1 auto; position: relative; background-color: vars.$bg-primary; min-width: 0; }
 
 .cyContainer { position: absolute; inset: 0; outline: none; min-width: 0; }

@@ -8,7 +8,6 @@ const themeColors = {
     statusSuccess: '#64a338',
     statusWarning: '#ffcc00',
     statusError: '#e03b24',
-    statusInfo: '#87a2c7',
   },
   dark: {
     bgPrimary: '#1a1b20',
@@ -19,7 +18,6 @@ const themeColors = {
     statusSuccess: '#64a338',
     statusWarning: '#ffcc00',
     statusError: '#e03b24',
-    statusInfo: '#87a2c7',
   }
 };
 
@@ -68,7 +66,6 @@ export const getTopologyStyles = (theme: 'light' | 'dark' = 'light'): CytoscapeS
     { selector: 'node[state = "ok"]', style: { 'border-color': colors.statusSuccess } },
     { selector: 'node[state = "warning"]', style: { 'border-color': colors.statusWarning } },
     { selector: 'node[state = "error"]', style: { 'border-color': colors.statusError, 'border-width': 3, 'background-color': '#ffebee' } },
-    { selector: 'node[state = "info"]', style: { 'border-color': colors.statusInfo } },
     {
       selector: 'edge',
       style: {

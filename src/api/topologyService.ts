@@ -1,4 +1,4 @@
-import type { TopologyResponse } from '../types/topology';
+import type { TopologyResponse } from '../types/topology'
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)
   ?? 'http://impulse.yadro.msk.ru';
@@ -15,9 +15,6 @@ async function request<T>(url: string, config?: RequestInit): Promise<T> {
 }
 
 export const topologyService = {
-  /**
-   * Получение сырых данных топологии с бэкенда
-   */
   getTopology: (): Promise<TopologyResponse> => {
     return request<TopologyResponse>(BASE_URL);
   },

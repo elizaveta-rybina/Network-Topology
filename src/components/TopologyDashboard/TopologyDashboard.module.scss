@@ -1,0 +1,53 @@
+@use "../../styles/variables" as vars;
+
+$header-height: 60px;
+$layout-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$sidebar-width: 320px;
+$sidebar-gap: 16px;
+$sidebar-padding: 20px;
+$sidebar-border-color: vars.$bg-panel;
+$overlay-font-size: 1.2rem;
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  background-color: vars.$bg-primary;
+  overflow: hidden;
+  overflow-x: hidden;
+  font-family: $layout-font;
+}
+
+.workspace {
+  display: flex;
+  flex: 1 1 auto;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  background-color: vars.$bg-secondary;
+  border-right: 1px solid $sidebar-border-color;
+  padding: $sidebar-padding;
+  display: flex;
+  flex-direction: column;
+  gap: $sidebar-gap;
+  z-index: 5;
+}
+
+.sidebarTitle { font-size: 1rem; color: vars.$text-primary; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+
+.graphArea { flex: 1 1 auto; position: relative; background-color: vars.$bg-primary; min-width: 0; }
+
+.cyContainer { position: absolute; inset: 0; outline: none; min-width: 0; }
+
+.overlay {
+  position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+  background-color: rgba(0,0,0,0.0); color: vars.$text-primary; font-size: $overlay-font-size; z-index: 20;
+}
+
+.error { color: vars.$status-error; }

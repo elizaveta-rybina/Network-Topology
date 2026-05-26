@@ -27,14 +27,3 @@ $overlay-font-size: 1.2rem;
   overflow: hidden;
   min-width: 0;
 }
-
-.graphArea { flex: 1 1 auto; position: relative; background-color: vars.$bg-primary; min-width: 0; }
-
-.cyContainer { position: absolute; inset: 0; outline: none; min-width: 0; }
-
-.overlay {
-  position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
-  background-color: rgba(0,0,0,0.0); color: vars.$text-primary; font-size: $overlay-font-size; z-index: 20;
-}
-
-.error { color: vars.$status-error; }

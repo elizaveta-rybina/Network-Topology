@@ -1,34 +1,25 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { filterTopologyData } from '../../features/filterTopology'
-import { mapToCytoscapeElements } from '../../features/mapTopology'
-import { useCytoscape } from '../../hooks/useCytoscape'
-import { useTopologyData } from '../../hooks/useTopologyData'
-import type { ApiConnection, ApiNode, TopologyFilterOptions } from '../../types/topology'
-import { Header } from '../Header/Header'
-import { Sidebar } from '../SideBar/Sidebar'
-import styles from './TopologyDashboard.module.scss'
+import { useMemo, useRef } from 'react';
+import { filterTopologyData } from '../../features/filterTopology';
+import { mapToCytoscapeElements } from '../../features/mapTopology';
+import { useCytoscape } from '../../hooks/useCytoscape';
+import { useTopologyData } from '../../hooks/useTopologyData';
+import { useDashboardState } from '../../hooks/useDashboardState';
+import { useGraphControls } from '../../hooks/useGraphControls';
+
+import { Header } from '../Header/Header';
+import { Sidebar } from '../SideBar/Sidebar';
+import { GraphArea } from '../GraphArea/GraphArea';
+import styles from './TopologyDashboard.module.scss';
 
 export const TopologyDashboard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-  const [selectedElement, setSelectedElement] = useState<ApiNode | ApiConnection | null>(null);
-
-  const [filters, setFilters] = useState<TopologyFilterOptions>({
-    searchQuery: '',
-    states: [],
-    types: [],
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  }, []);
-
   const { data, isLoading, error } = useTopologyData();
+
+  const {
+    theme, toggleTheme,
+    filters, handleFilterChange,
+    selectedElement, setSelectedElement
+  } = useDashboardState();
 
   const cyElements = useMemo(() => {
     if (!data) return [];
@@ -43,30 +34,7 @@ export const TopologyDashboard = () => {
     onElementClick: setSelectedElement,
   });
 
-  const handleFilterChange = useCallback((newFilters: TopologyFilterOptions) => {
-    setFilters(newFilters);
-    setSelectedElement(null); 
-  }, []);
-
-  const handleZoomIn = useCallback(() => {
-    const cy = cyRef.current;
-    if (cy) {
-      cy.zoom({
-        level: cy.zoom() * 1.2,
-        renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-      });
-    }
-  }, [cyRef]);
-
-  const handleZoomOut = useCallback(() => {
-    const cy = cyRef.current;
-    if (cy) {
-      cy.zoom({
-        level: cy.zoom() * 0.8,
-        renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 }
-      });
-    }
-  }, [cyRef]);
+  const { handleZoomIn, handleZoomOut } = useGraphControls(cyRef);
 
   return (
     <div className={styles.layout}>
@@ -86,23 +54,13 @@ export const TopologyDashboard = () => {
           selectedElement={selectedElement}
         />
 
-        <main className={styles.graphArea}>
-          <div 
-            ref={containerRef} 
-            className={styles.cyContainer} 
-            style={{ 
-              opacity: isGraphReady ? 1 : 0, 
-              transition: 'opacity 0.22s ease-out' 
-            }} 
-          />
-         
-          {(isLoading || (data && !isGraphReady)) && (
-            <div className={styles.overlay}>Загрузка топологии...</div>
-          )}
-          {error && (
-            <div className={`${styles.overlay} ${styles.error}`}>{error}</div>
-          )}
-        </main>
+        <GraphArea 
+          ref={containerRef}
+          isGraphReady={isGraphReady}
+          isLoading={isLoading}
+          hasData={!!data}
+          error={error ? String(error) : null}
+        />
       </div>
     </div>
   );

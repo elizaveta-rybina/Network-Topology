@@ -76,8 +76,10 @@ export const GraphArea = forwardRef<HTMLDivElement, GraphAreaProps>(
         )}
         {!error && noAccess && (
           <div className={styles.overlay}>
-            <div className={styles.noAccessTitle}>Топология недоступна</div>
-            <div className={styles.noAccessText}>{noAccess}</div>
+            <div className={styles.noAccessContent}>
+              <div className={styles.noAccessTitle}>Топология недоступна</div>
+              <div className={styles.noAccessText}>{noAccess}</div>
+            </div>
           </div>
         )}
       </main>

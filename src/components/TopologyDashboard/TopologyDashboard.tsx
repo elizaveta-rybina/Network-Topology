@@ -31,7 +31,7 @@ export const TopologyDashboard = () => {
   const [incidentRadius, setIncidentRadius] = useState<IncidentRadius>(1);
   const [storyStep, setStoryStep] = useState<'overview' | 'path' | 'failure' | 'backup' | 'impact'>('overview');
 
-  const { data, isLoading, error, accessError } = useTopologyData(account);
+  const { data, isLoading, error, accessError, refetch: refetchTopology } = useTopologyData(account);
 
   const {
     theme, toggleTheme,
@@ -110,6 +110,36 @@ export const TopologyDashboard = () => {
     setIncidentRadius(2);
   };
 
+  const handleAddNode = async (node: import('../../types/topology').ApiNode) => {
+    try {
+      await topologyService.addNode(node);
+      await refetchTopology();
+      showToast('ok', `Узел «${node.label}» добавлен`);
+    } catch (err) {
+      showToast('err', err instanceof Error ? err.message : 'Не удалось добавить узел');
+    }
+  };
+
+  const handleUpdateNode = async (id: string, patch: Partial<import('../../types/topology').ApiNode>) => {
+    try {
+      await topologyService.updateNode(id, patch);
+      await refetchTopology();
+      showToast('ok', 'Узел сохранён');
+    } catch (err) {
+      showToast('err', err instanceof Error ? err.message : 'Не удалось сохранить узел');
+    }
+  };
+
+  const handleAddConnection = async (connection: import('../../types/topology').ApiConnection) => {
+    try {
+      await topologyService.addConnection(connection);
+      await refetchTopology();
+      showToast('ok', 'Связь добавлена');
+    } catch (err) {
+      showToast('err', err instanceof Error ? err.message : 'Не удалось добавить связь');
+    }
+  };
+
   const handleStoryStepChange = (step: 'overview' | 'path' | 'failure' | 'backup' | 'impact') => {
     if (step === 'path' || step === 'backup') setIncidentRadius(2);
     setStoryStep(step);
@@ -151,6 +181,11 @@ export const TopologyDashboard = () => {
           story={data?.story}
           storyStep={storyStep}
           onStoryStepChange={handleStoryStepChange}
+          canEditTopology={canRole(account.role, 'topology:write')}
+          onAddNode={handleAddNode}
+          onUpdateNode={handleUpdateNode}
+          onAddConnection={handleAddConnection}
+          availableNodeIds={data?.nodes.map((node) => node.id) ?? []}
           scope={{
             roleLabel: ROLE_LABELS[account.role],
             orgName: org?.name ?? null,

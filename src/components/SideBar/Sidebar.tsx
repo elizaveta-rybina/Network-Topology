@@ -40,6 +40,11 @@ interface SidebarProps {
   story?: TopologyStory;
   storyStep: 'overview' | 'path' | 'failure' | 'backup' | 'impact';
   onStoryStepChange: (step: 'overview' | 'path' | 'failure' | 'backup' | 'impact') => void;
+  canEditTopology: boolean;
+  onAddNode: (node: ApiNode) => Promise<void>;
+  onUpdateNode: (id: string, patch: Partial<ApiNode>) => Promise<void>;
+  onAddConnection: (connection: ApiConnection) => Promise<void>;
+  availableNodeIds: string[];
   scope: {
     roleLabel: string | null;
     orgName: string | null;
@@ -53,9 +58,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   filters,
   onFilterChange,
   selectedElement,
-  scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident, story, storyStep, onStoryStepChange
+  scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident, story, storyStep, onStoryStepChange,
+  canEditTopology, onAddNode, onUpdateNode, onAddConnection, availableNodeIds
 }) => {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
+  const [newNode, setNewNode] = useState({ id: '', label: '', type: 'server', state: 'ok' as ApiNode['state'] });
+  const [newConnection, setNewConnection] = useState({ source: '', target: '', type: 'arrow' });
+  const [editLabel, setEditLabel] = useState('');
+  const [editState, setEditState] = useState<ApiNode['state']>('ok');
   
   const handleStateChange = (stateValue: string, isChecked: boolean) => {
     const currentStates = filters.states || [];
@@ -64,6 +74,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
       : currentStates.filter((s) => s !== stateValue);
       
     onFilterChange({ ...filters, states: newStates });
+  };
+
+  const handleSaveNode = async () => {
+    if (!newNode.id || !newNode.label) return;
+    await onAddNode(newNode);
+    setNewNode({ id: '', label: '', type: 'server', state: 'ok' });
+  };
+
+  const handleUpdateSelected = async () => {
+    if (!selectedElement || 'source' in selectedElement) return;
+    await onUpdateNode(selectedElement.id, { label: editLabel || selectedElement.label, state: editState });
   };
 
   return (
@@ -167,6 +188,40 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>}
 
       {showTechnicalDetails && <div className={styles.filtersContainer}>
+        {canEditTopology && (
+          <div className={styles.editPanel}>
+            <div className={styles.filterLabel}>Изменение топологии</div>
+            <input placeholder="ID нового узла" value={newNode.id} onChange={(e) => setNewNode({ ...newNode, id: e.target.value })} />
+            <input placeholder="Название узла" value={newNode.label} onChange={(e) => setNewNode({ ...newNode, label: e.target.value })} />
+            <select value={newNode.type} onChange={(e) => setNewNode({ ...newNode, type: e.target.value })}>
+              <option value="server">Сервер</option>
+              <option value="router">Маршрутизатор</option>
+              <option value="switch">Коммутатор</option>
+              <option value="firewall">Межсетевой экран</option>
+            </select>
+            <button type="button" onClick={() => void handleSaveNode()}>Добавить узел</button>
+            {selectedElement && !('source' in selectedElement) && (
+              <>
+                <input value={editLabel} placeholder={selectedElement.label} onFocus={() => setEditLabel(selectedElement.label)} onChange={(e) => setEditLabel(e.target.value)} />
+                <select value={editState} onChange={(e) => setEditState(e.target.value as ApiNode['state'])}>
+                  <option value="ok">Норма</option>
+                  <option value="warning">Предупреждение</option>
+                  <option value="error">Ошибка</option>
+                </select>
+                <button type="button" onClick={() => void handleUpdateSelected()}>Сохранить выбранный узел</button>
+              </>
+            )}
+            <select value={newConnection.source} onChange={(e) => setNewConnection({ ...newConnection, source: e.target.value })}>
+              <option value="">Откуда</option>
+              {availableNodeIds.map((id) => <option key={id} value={id}>{id}</option>)}
+            </select>
+            <select value={newConnection.target} onChange={(e) => setNewConnection({ ...newConnection, target: e.target.value })}>
+              <option value="">Куда</option>
+              {availableNodeIds.map((id) => <option key={id} value={id}>{id}</option>)}
+            </select>
+            <button type="button" onClick={() => void onAddConnection({ id: `e-${Date.now()}`, ...newConnection })}>Добавить связь</button>
+          </div>
+        )}
         
         <div className={styles.filterSection}>
           <div className={styles.filterLabel}>Статус</div>

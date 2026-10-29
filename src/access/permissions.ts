@@ -17,7 +17,7 @@ export const ROLE_OPERATIONS: Record<Role, readonly Operation[]> = {
   ],
   // Аналитик сети: топология и метрики сегментов назначенных проектов;
   // экспорт ограничен политикой организации и аудируется.
-  network_analyst: ['topology:read', 'topology:filter', 'topology:export'],
+  network_analyst: ['topology:read', 'topology:filter', 'topology:export', 'topology:write'],
   // Наблюдатель: только просмотр разрешённой топологии, без импорта и экспорта.
   observer: ['topology:read'],
   // Аудитор безопасности: журнал событий — чтение и выгрузка, без изменений.

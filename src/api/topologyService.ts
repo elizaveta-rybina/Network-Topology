@@ -1,4 +1,4 @@
-import type { TopologyResponse } from '../types/topology'
+import type { ApiConnection, ApiNode, TopologyResponse } from '../types/topology'
 import { mockTopology } from '../mocks/topologyData'
 import { getSegmentOfNode } from '../mocks/accessData'
 import { authorize, getAccessibleSegmentIds } from '../access/accessControl'
@@ -89,8 +89,30 @@ export const topologyService = {
       return structuredClone(sliceTopologyBySegments(mockTopology, segmentIds));
     }
 
-    return request<TopologyResponse>(BASE_URL);
+    const topology = await request<TopologyResponse>(`${BASE_URL}/topology`);
+    return sliceTopologyBySegments(topology, getAccessibleSegmentIds(account));
   },
+
+  addNode: (node: ApiNode) => request<ApiNode>(`${BASE_URL}/topology/nodes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(node),
+  }),
+
+  updateNode: (id: string, patch: Partial<ApiNode>) => request<ApiNode>(
+    `${BASE_URL}/topology/nodes/${encodeURIComponent(id)}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    },
+  ),
+
+  addConnection: (connection: ApiConnection) => request<ApiConnection>(`${BASE_URL}/topology/connections`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(connection),
+  }),
 
   /**
    * Экспорт топологии: только аналитик, в рамках политики организации

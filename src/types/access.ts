@@ -11,6 +11,7 @@ export type Operation =
   | 'topology:read'
   | 'topology:filter'
   | 'topology:export'
+  | 'topology:write'
   | 'users:read'
   | 'users:create'
   | 'users:assign_rights'

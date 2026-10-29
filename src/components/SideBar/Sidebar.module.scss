@@ -201,6 +201,35 @@ $checkbox-size: 18px;
   flex: 1;
 }
 
+.editPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: $radius-sm;
+  background: vars.$bg-primary;
+
+  input, select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 7px;
+    border: 1px solid vars.$bg-panel;
+    border-radius: 4px;
+    background: vars.$bg-primary;
+    color: vars.$text-primary;
+  }
+
+  button {
+    padding: 7px;
+    border: 0;
+    border-radius: 4px;
+    background: vars.$accent-primary;
+    color: vars.$text-inverse;
+    cursor: pointer;
+  }
+}
+
 .stats {
   margin-top: auto;
   padding-top: 16px;

@@ -49,6 +49,133 @@ $overlay-font-size: 1.2rem;
 .legendWarning { background: vars.$status-warning; }
 .legendError { background: vars.$status-error; }
 
+.storyCard {
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  z-index: 15;
+  width: min(540px, calc(100% - 44px));
+  padding: 20px 22px;
+  border: 1px solid rgba(30, 34, 171, .18);
+  border-left: 5px solid vars.$status-error;
+  border-radius: 10px;
+  background: vars.$bg-primary;
+  color: vars.$text-primary;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .12);
+  pointer-events: none;
+
+  h2 {
+    margin: 5px 0 7px;
+    font-size: 1.35rem;
+  }
+
+  p { margin: 0; line-height: 1.4; }
+}
+
+.storyEyebrow {
+  color: vars.$status-error;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.storySummary {
+  color: vars.$text-primary;
+  font-size: .94rem;
+  line-height: 1.5;
+}
+
+.storyMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 17px 0 14px;
+
+  > div {
+    display: flex;
+    min-height: 66px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 9px 10px;
+    border: 1px solid vars.$bg-panel;
+    border-radius: 7px;
+    background: vars.$bg-secondary;
+  }
+
+  strong {
+    color: vars.$text-primary;
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+
+  span {
+    margin-top: 4px;
+    color: vars.$text-muted;
+    font-size: .7rem;
+    line-height: 1.2;
+  }
+}
+
+.storyMetricError {
+  border-color: rgba(224, 59, 36, .35) !important;
+  background: rgba(224, 59, 36, .08) !important;
+
+  strong { color: vars.$status-error; }
+}
+
+.storyMetricAvailable {
+  border-color: rgba(100, 163, 56, .35) !important;
+  background: rgba(100, 163, 56, .08) !important;
+
+  strong { color: vars.$status-success; }
+}
+
+.storyPath {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin: 13px 0;
+  font-size: .76rem;
+
+  span { display: inline-flex; align-items: center; gap: 5px; }
+  i { color: vars.$text-muted; font-style: normal; }
+}
+
+.storyPathProblem {
+  color: vars.$status-error;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.storyFacts {
+  display: grid;
+  gap: 7px;
+  font-size: .76rem;
+
+  div { display: grid; grid-template-columns: 102px 1fr; gap: 8px; }
+  strong { color: vars.$text-muted; }
+  span { line-height: 1.35; }
+}
+
+.storyAction {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid vars.$bg-panel;
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.storyStepHint {
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid vars.$bg-panel;
+  color: vars.$accent-primary;
+  font-size: .76rem;
+  line-height: 1.35;
+}
+
 .overlay {
   position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
   background-color: rgba(0,0,0,0.0); color: vars.$text-primary; font-size: $overlay-font-size; z-index: 20;

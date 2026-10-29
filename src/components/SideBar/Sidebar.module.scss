@@ -31,6 +31,32 @@ $checkbox-size: 18px;
   letter-spacing: 0.5px;
 }
 
+.explainerPanel {
+  padding: 12px;
+  border: 1px solid rgba(30, 34, 171, .18);
+  border-radius: $radius-sm;
+  background: vars.$bg-primary;
+  color: vars.$text-primary;
+  font-size: .79rem;
+  line-height: 1.4;
+
+  p { margin: 7px 0; }
+  ol { margin: 0 0 8px; padding-left: 19px; }
+  li { margin: 3px 0; }
+}
+
+.explainerTitle {
+  color: vars.$accent-primary;
+  font-size: .86rem;
+  font-weight: 700;
+}
+
+.explainerHint {
+  padding-top: 8px;
+  border-top: 1px solid vars.$bg-panel;
+  color: vars.$text-muted;
+}
+
 .incidentPanel {
   background: vars.$bg-primary;
   border: 1px solid vars.$bg-panel;
@@ -113,6 +139,59 @@ $checkbox-size: 18px;
   cursor: pointer;
   font-size: .78rem;
   padding: 3px 0;
+}
+
+.currentExplanation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(30, 34, 171, .06);
+  color: vars.$text-primary;
+  font-size: .77rem;
+  line-height: 1.4;
+
+  strong { color: vars.$accent-primary; }
+}
+
+.storySteps {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid vars.$bg-panel;
+  font-size: .78rem;
+
+  strong { color: vars.$accent-primary; }
+  button {
+    padding: 6px 8px;
+    border: 1px solid vars.$bg-panel;
+    border-radius: 4px;
+    background: vars.$bg-primary;
+    color: vars.$text-primary;
+    text-align: left;
+    cursor: pointer;
+  }
+}
+
+.storyStepActive {
+  border-color: vars.$accent-primary !important;
+  background: rgba(30, 34, 171, .08) !important;
+  color: vars.$accent-primary !important;
+  font-weight: 600;
+}
+
+.technicalToggle {
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: vars.$accent-primary;
+  text-align: left;
+  cursor: pointer;
+  font-size: .8rem;
 }
 
 .filtersContainer {

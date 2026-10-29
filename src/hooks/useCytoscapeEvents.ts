@@ -59,6 +59,9 @@ export const registerCytoscapeEvents = (cy: Core, onElementClickRef: OnElementCl
     }
   }
 
+  const onNodeMouseOver = (event: any) => event.target.addClass('node-hover')
+  const onNodeMouseOut = (event: any) => event.target.removeClass('node-hover')
+
   // нативный dblclick: браузер применяет системный порог двойного клика,
   // поэтому медленные двойные клики тоже распознаются
   const container = cy.container();
@@ -83,6 +86,8 @@ export const registerCytoscapeEvents = (cy: Core, onElementClickRef: OnElementCl
   cy.on('layoutstop', savePositions)
   cy.on('tap', 'node, edge', onTapNodeEdge)
   cy.on('tap', onTapBackground)
+  cy.on('mouseover', 'node', onNodeMouseOver)
+  cy.on('mouseout', 'node', onNodeMouseOut)
 
   return () => {
     container.removeEventListener('dblclick', onDomDblClick)
@@ -90,6 +95,8 @@ export const registerCytoscapeEvents = (cy: Core, onElementClickRef: OnElementCl
     cy.off('layoutstop', savePositions)
     cy.off('tap', 'node, edge', onTapNodeEdge)
     cy.off('tap', onTapBackground)
+    cy.off('mouseover', 'node', onNodeMouseOver)
+    cy.off('mouseout', 'node', onNodeMouseOut)
   }
 }
 

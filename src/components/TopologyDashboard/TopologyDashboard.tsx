@@ -29,6 +29,7 @@ export const TopologyDashboard = () => {
   const [focusMode, setFocusMode] = useState<'all' | 'incident'>('incident');
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
   const [incidentRadius, setIncidentRadius] = useState<IncidentRadius>(1);
+  const [storyStep, setStoryStep] = useState<'overview' | 'path' | 'failure' | 'backup' | 'impact'>('overview');
 
   const { data, isLoading, error, accessError } = useTopologyData(account);
 
@@ -59,6 +60,12 @@ export const TopologyDashboard = () => {
     theme,
     onElementClick: setSelectedElement,
     focusNodeId: focusMode === 'incident' ? activeFocusNodeId : null,
+    highlightNodeIds: focusMode === 'incident' && data?.story
+      ? storyStep === 'path' ? data.story.pathNodeIds
+        : storyStep === 'failure' ? data.story.failureNodeIds
+          : storyStep === 'backup' ? data.story.backupNodeIds
+            : storyStep === 'impact' ? data.story.impactNodeIds : []
+      : [],
   });
 
   const { handleZoomIn, handleZoomOut } = useGraphControls(cyRef);
@@ -94,12 +101,18 @@ export const TopologyDashboard = () => {
   const handleFocusIncident = (nodeId: string) => {
     setFocusNodeId(nodeId);
     setIncidentRadius(1);
+    setStoryStep('overview');
     setFocusMode('incident');
     setSelectedElement(null);
   };
 
   const handleExpandIncident = () => {
     setIncidentRadius(2);
+  };
+
+  const handleStoryStepChange = (step: 'overview' | 'path' | 'failure' | 'backup' | 'impact') => {
+    if (step === 'path' || step === 'backup') setIncidentRadius(2);
+    setStoryStep(step);
   };
 
   return (
@@ -135,6 +148,9 @@ export const TopologyDashboard = () => {
           onFocusIncident={handleFocusIncident}
           onShowAll={() => setFocusMode('all')}
           onExpandIncident={handleExpandIncident}
+          story={data?.story}
+          storyStep={storyStep}
+          onStoryStepChange={handleStoryStepChange}
           scope={{
             roleLabel: ROLE_LABELS[account.role],
             orgName: org?.name ?? null,
@@ -149,6 +165,9 @@ export const TopologyDashboard = () => {
           hasData={!!data}
           error={error ? String(error) : null}
           noAccess={accessError}
+          story={data?.story}
+          showStory={focusMode === 'incident'}
+          storyStep={storyStep}
         />
       </div>
 

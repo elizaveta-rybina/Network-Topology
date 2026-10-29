@@ -1,6 +1,26 @@
 import type { TopologyResponse } from '../types/topology';
 
 export const mockTopology: TopologyResponse = {
+  story: {
+    service: 'Веб-сервис для пользователей',
+    headline: 'Веб-сервис работает с перебоями',
+    description: 'Один из двух серверов не отвечает. Запросы автоматически направляются на резервный сервер. Полной остановки сервиса нет.',
+    metrics: {
+      errors: 1,
+      affectedComponents: 1,
+      availability: 'Доступен через резерв',
+    },
+    summary: 'Один сервер приложения не отвечает, но сервис продолжает работать через резервный сервер.',
+    impact: 'Часть запросов может выполняться медленнее; полной остановки сервиса нет.',
+    rootCause: 'Web Server 2 не проходит проверку доступности по HTTP.',
+    availability: 'Резервный Web Server 3 доступен и принимает трафик.',
+    path: ['Интернет', 'Межсетевой экран', 'Балансировщик', 'Web Server 2'],
+    nextAction: 'Проверить Web Server 2 и вывести его из балансировки до восстановления.',
+    pathNodeIds: ['inet-gw-1', 'fw-1', 'lb-1', 'srv-web-2'],
+    failureNodeIds: ['srv-web-2', 'lb-1'],
+    backupNodeIds: ['lb-2', 'srv-web-3'],
+    impactNodeIds: ['srv-web-2', 'srv-web-3'],
+  },
   nodes: [
     { id: 'dmz', label: 'DMZ-зона', type: 'zone', state: 'ok' },
     { id: 'rack-a1', label: 'Стойка A1 (приложения)', type: 'rack', state: 'ok' },

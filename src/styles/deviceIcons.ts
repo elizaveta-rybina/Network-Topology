@@ -17,7 +17,7 @@ const svgToDataUri = (body: string, accent: string): string => {
   // @a в теле иконки заменяется на акцентный цвет (точечные заливки)
   const painted = body.replace(/@a/g, accent);
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none" ` +
     `stroke="${accent}" stroke-width="${STROKE}" stroke-linecap="round" stroke-linejoin="round">` +
     painted +
     `</svg>`;

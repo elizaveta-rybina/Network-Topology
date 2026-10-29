@@ -1,5 +1,5 @@
-import React from 'react'
-import type { ApiConnection, ApiNode, TopologyFilterOptions } from '../../types/topology'
+import React, { useState } from 'react'
+import type { ApiConnection, ApiNode, TopologyFilterOptions, TopologyStory } from '../../types/topology'
 import { getDeviceIcon, LEGEND_TYPES } from '../../styles/deviceIcons'
 import styles from './Sidebar.module.scss'
 
@@ -8,6 +8,21 @@ const AVAILABLE_STATES = [
   { value: 'warning', label: 'Предупреждение' },
   { value: 'error', label: 'Ошибка' },
 ];
+
+const TYPE_LABELS: Record<string, string> = {
+  gateway: 'шлюз — вход/выход в сеть',
+  firewall: 'межсетевой экран — проверяет доступ',
+  'load-balancer': 'балансировщик — распределяет запросы',
+  server: 'сервер — выполняет приложение',
+  switch: 'коммутатор — соединяет устройства',
+  router: 'маршрутизатор — передаёт трафик между сетями',
+};
+
+const STATE_LABELS: Record<string, string> = {
+  ok: 'Норма: работает штатно',
+  warning: 'Предупреждение: есть риск или деградация',
+  error: 'Ошибка: компонент не работает',
+};
 
 interface SidebarProps {
   isLoading: boolean;
@@ -22,6 +37,9 @@ interface SidebarProps {
   onFocusIncident: (nodeId: string) => void;
   onShowAll: () => void;
   onExpandIncident: () => void;
+  story?: TopologyStory;
+  storyStep: 'overview' | 'path' | 'failure' | 'backup' | 'impact';
+  onStoryStepChange: (step: 'overview' | 'path' | 'failure' | 'backup' | 'impact') => void;
   scope: {
     roleLabel: string | null;
     orgName: string | null;
@@ -35,8 +53,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   filters,
   onFilterChange,
   selectedElement,
-  scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident
+  scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident, story, storyStep, onStoryStepChange
 }) => {
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
   
   const handleStateChange = (stateValue: string, isChecked: boolean) => {
     const currentStates = filters.states || [];
@@ -50,6 +69,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={styles.sidebar}>
       <div className={styles.title}>Управление</div>
+
+      <div className={styles.explainerPanel}>
+        <div className={styles.explainerTitle}>Как читать карту</div>
+        <p>Топология показывает путь запроса и помогает найти место, из-за которого сервис работает неправильно.</p>
+        <ol>
+          <li><strong>Кружок</strong> — устройство или сервис.</li>
+          <li><strong>Линия</strong> — связь между ними.</li>
+          <li><strong>Красный</strong> — проблема, жёлтый — риск.</li>
+        </ol>
+        <div className={styles.explainerHint}>Нажмите на проблему слева — карта оставит только её окружение.</div>
+      </div>
 
       <div className={styles.incidentPanel}>
         <div className={styles.incidentHeader}>
@@ -80,11 +110,45 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {focusMode === 'incident' && <button type="button" onClick={onExpandIncident}>Расширить область ({incidentRadius === 1 ? '2 перехода' : 'максимум'})</button>}
               {focusMode === 'incident' && <button type="button" onClick={onShowAll}>Показать всю топологию</button>}
             </div>
+            {focusMode === 'incident' && story && (
+              <div className={styles.currentExplanation}>
+                <strong>Что происходит сейчас</strong>
+                <span>{story.impact}</span>
+                <span>{story.availability}</span>
+              </div>
+            )}
+            {focusMode === 'incident' && story && (
+              <div className={styles.storySteps}>
+                <strong>Показать на карте</strong>
+                {([
+                  ['path', '1. Путь запроса'],
+                  ['failure', '2. Место ошибки'],
+                  ['backup', '3. Резервный путь'],
+                  ['impact', '4. Что затронуто'],
+                ] as const).map(([step, label]) => (
+                  <button
+                    type="button"
+                    key={step}
+                    className={storyStep === step ? styles.storyStepActive : ''}
+                    onClick={() => onStoryStepChange(step)}
+                  >
+                    {label}
+                  </button>
+                ))}
+                <button type="button" className={storyStep === 'overview' ? styles.storyStepActive : ''} onClick={() => onStoryStepChange('overview')}>
+                  Снять подсветку
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
 
-      <div className={styles.filterSection}>
+      <button type="button" className={styles.technicalToggle} onClick={() => setShowTechnicalDetails((value) => !value)}>
+        {showTechnicalDetails ? 'Скрыть технические детали' : 'Показать технические детали'}
+      </button>
+
+      {showTechnicalDetails && <div className={styles.filterSection}>
         <div className={styles.filterLabel}>Область доступа</div>
         <div className={styles.nodeInfoPanel}>
           <div className={styles.infoRow}>
@@ -100,9 +164,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span>{scope.segmentLabels.length > 0 ? scope.segmentLabels.join(', ') : 'нет назначенных'}</span>
           </div>
         </div>
-      </div>
+      </div>}
 
-      <div className={styles.filtersContainer}>
+      {showTechnicalDetails && <div className={styles.filtersContainer}>
         
         <div className={styles.filterSection}>
           <div className={styles.filterLabel}>Статус</div>
@@ -139,7 +203,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             })}
           </div>
           <div className={styles.legendHint}>
-            Стойки свёрнуты: двойной клик по группе или кий в её углу разворачивает содержимое
+            Стойки свёрнуты: двойной клик по группе или значку в её углу разворачивает содержимое
           </div>
         </div>
 
@@ -181,11 +245,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div className={styles.infoRow}>
                     <strong>Тип:</strong> 
-                    <span>{selectedElement.type}</span>
+                    <span>{TYPE_LABELS[selectedElement.type] ?? selectedElement.type}</span>
                   </div>
                   <div className={styles.infoRow}>
                     <strong>Статус:</strong> 
-                    <span>{selectedElement.state}</span>
+                    <span>{STATE_LABELS[selectedElement.state] ?? selectedElement.state}</span>
                   </div>
                   {selectedElement.problem && (
                     <>
@@ -213,7 +277,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
-      </div>
+      </div>}
 
       <div className={styles.stats}>
         {isLoading ? 'Загрузка...' : `Отображено узлов: ${nodesCount}`}

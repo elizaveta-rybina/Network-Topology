@@ -8,6 +8,27 @@ export interface ProblemInfo {
   source?: string;
 }
 
+export interface TopologyStory {
+  service: string;
+  headline: string;
+  description: string;
+  metrics: {
+    errors: number;
+    affectedComponents: number;
+    availability: string;
+  };
+  summary: string;
+  impact: string;
+  rootCause: string;
+  availability: string;
+  path: string[];
+  nextAction: string;
+  pathNodeIds: string[];
+  failureNodeIds: string[];
+  backupNodeIds: string[];
+  impactNodeIds: string[];
+}
+
 export interface ApiNode {
   id: string;
   label: string;
@@ -29,6 +50,7 @@ export interface ApiConnection {
 export interface TopologyResponse {
   nodes: ApiNode[];
   connections: ApiConnection[];
+  story?: TopologyStory;
 }
 
 export interface TopologyFilterOptions {

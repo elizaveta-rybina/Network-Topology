@@ -46,5 +46,5 @@ export const getIncidentTopology = (
   const connections = data.connections.filter(
     (connection) => ids.has(connection.source) && ids.has(connection.target),
   );
-  return { nodes, connections };
+  return { nodes, connections, story: data.story };
 };

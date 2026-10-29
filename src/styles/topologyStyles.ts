@@ -33,12 +33,12 @@ const deviceIconStyles: CytoscapeStyle[] = [...LEGEND_TYPES, 'device'].map((type
   style: {
     'background-image': getDeviceIcon(type).src,
     'background-fit': 'contain' as const,
-    'background-width': '70%',
-    'background-height': '70%',
+    'background-width': 34,
+    'background-height': 34,
     'background-position-x': '50%',
     'background-position-y': '50%',
+    'background-repeat': 'no-repeat' as const,
     'background-clip': 'node' as const,
-    'background-image-opacity': 1,
   },
 }));
 
@@ -99,7 +99,8 @@ export const getTopologyStyles = (theme: 'light' | 'dark' = 'light'): CytoscapeS
     { selector: 'node[state = "error"]', style: { 'text-background-color': colors.statusErrorBg, 'text-background-opacity': 1 } },
     { selector: 'edge[state = "warning"]', style: { 'line-color': colors.statusWarning, 'target-arrow-color': colors.statusWarning, width: 3, 'line-style': 'dashed' } },
     { selector: 'edge[state = "error"]', style: { 'line-color': colors.statusError, 'target-arrow-color': colors.statusError, width: 4 } },
-    { selector: '.incident-dimmed', style: { opacity: 0.18 } },
+    { selector: '.incident-dimmed, .story-dimmed', style: { opacity: 0.18 } },
+    { selector: '.story-highlight', style: { 'border-width': 5, 'overlay-color': colors.accentPrimary, 'overlay-opacity': 0.2 } },
     { selector: '.incident-root', style: { 'border-color': colors.statusError, 'border-width': 5, 'overlay-color': colors.statusError, 'overlay-opacity': 0.18 } },
     // свёрнутая группа (стойка/зона) выглядит как узел-контейнер
     {
@@ -137,11 +138,13 @@ export const getTopologyStyles = (theme: 'light' | 'dark' = 'light'): CytoscapeS
     { selector: 'edge[type = "circle"]', style: { 'target-arrow-shape': 'circle' } },
     { selector: 'edge[type = "square"]', style: { 'target-arrow-shape': 'square' } },
     { selector: 'edge[type = "dashed"], edge[type = "line"]', style: { 'line-style': 'dashed', 'target-arrow-shape': 'none' } },
-    // интерактивные подсказки: наведение и выбор узла
-    { selector: 'node:hover', style: { 'overlay-color': colors.accentPrimary, 'overlay-opacity': 0.15 } },
+    { selector: 'node.node-hover', style: { 'overlay-color': colors.accentPrimary, 'overlay-opacity': 0.15 } },
     {
       selector: 'node:selected',
-      style: { 'border-color': colors.accentPrimary, 'border-width': 3 },
+      style: {
+        'border-color': colors.accentPrimary,
+        'border-width': 3,
+      },
     },
     ...deviceIconStyles,
   ];

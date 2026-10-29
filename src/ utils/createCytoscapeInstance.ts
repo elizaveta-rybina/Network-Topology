@@ -4,13 +4,18 @@ import expandCollapse from 'cytoscape-expand-collapse'
 import { getTopologyStyles } from '../styles/topologyStyles'
 import { getFcoseLayoutConfig } from '../features/layoutConfig'
 
-cytoscape.use(expandCollapse)
+const pluginProbe = cytoscape({ elements: [] })
+const hasExpandCollapse = typeof (pluginProbe as Core & { expandCollapse?: unknown }).expandCollapse === 'function'
+pluginProbe.destroy()
+
+if (!hasExpandCollapse) {
+  cytoscape.use(expandCollapse)
+}
 
 export const createCytoscapeInstance = (container: HTMLDivElement, theme: 'light' | 'dark'): Core => {
   const cy = cytoscape({
     container,
     style: getTopologyStyles(theme),
-    wheelSensitivity: 0.2,
     maxZoom: 5,
     minZoom: 0.1,
   })

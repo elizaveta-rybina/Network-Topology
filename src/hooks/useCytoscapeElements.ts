@@ -42,6 +42,7 @@ export const useCytoscapeElements = (
   cyRef: React.RefObject<Core | null>,
   elements: ElementDefinition[],
   focusNodeId?: string | null,
+  highlightNodeIds: string[] = [],
 ) => {
   const [isGraphReady, setIsGraphReady] = useState(false)
   const hasRenderedOnceRef = useRef(false)
@@ -123,6 +124,21 @@ export const useCytoscapeElements = (
       }
     }
   }, [cyRef, elements, focusNodeId])
+
+  useEffect(() => {
+    const cy = cyRef.current
+    if (!cy || highlightNodeIds.length === 0) return
+    const highlighted = highlightNodeIds.reduce(
+      (collection, id) => collection.union(cy.$id(id)),
+      cy.collection(),
+    )
+    cy.elements().removeClass('story-highlight story-dimmed')
+    cy.elements().difference(highlighted).addClass('story-dimmed')
+    highlighted.addClass('story-highlight')
+    return () => {
+      cy.elements().removeClass('story-highlight story-dimmed')
+    }
+  }, [cyRef, highlightNodeIds, isGraphReady])
 
   useEffect(() => {
     const cy = cyRef.current

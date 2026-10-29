@@ -59,8 +59,9 @@ export const filterTopologyData = (
     }))
     .filter((conn) => finalNodeIds.has(conn.source) && finalNodeIds.has(conn.target));
 
-  return { 
+  return {
     nodes: finalNodes, 
-    connections: finalConnections 
+    connections: finalConnections,
+    story: data.story,
   };
 };

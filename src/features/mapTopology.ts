@@ -1,6 +1,25 @@
 import type cytoscape from 'cytoscape';
 import type { ApiConnection, ApiNode, TopologyResponse } from '../types/topology';
 
+const FRIENDLY_TYPES: Record<string, string> = {
+  gateway: 'Интернет-шлюз',
+  firewall: 'Защита входящего трафика',
+  'load-balancer': 'Распределитель запросов',
+  server: 'Сервер приложения',
+  switch: 'Коммутатор',
+  router: 'Центральный маршрутизатор',
+  storage: 'Система хранения данных',
+};
+
+const getDisplayLabel = (node: ApiNode, problemCount: number, state: ApiNode['state']) => {
+  const technicalLabel = node.label;
+  const friendlyType = FRIENDLY_TYPES[node.type];
+  const label = friendlyType && /^(Web Server|Load Balancer|Межсетевой экран|Интернет-шлюз|Core Router)/.test(technicalLabel)
+    ? `${friendlyType} · ${technicalLabel}`
+    : technicalLabel;
+  return problemCount > 0 ? `${label}  [${state === 'error' ? '×' : '!'} ${problemCount}]` : label;
+};
+
 const getNodeStatus = (node: ApiNode, nodes: ApiNode[]): ApiNode['state'] => {
   const descendants = nodes.filter((candidate) => {
     let parent = candidate.parent;
@@ -31,7 +50,7 @@ export const mapToCytoscapeElements = (data: TopologyResponse): cytoscape.Elemen
       data: {
         id: node.id,
         label: node.label,
-        displayLabel: problemCount > 0 ? `${node.label}  [${state === 'error' ? '×' : '!'} ${problemCount}]` : node.label,
+        displayLabel: getDisplayLabel(node, problemCount, state),
         state,
         type: node.type,
         parent: node.parent,

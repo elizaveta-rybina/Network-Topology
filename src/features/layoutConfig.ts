@@ -8,16 +8,19 @@ export const getFcoseLayoutConfig = (isFirstLoad: boolean, hasSavedPositions: bo
   name: 'fcose',
   animate: !isFirstLoad,
   animationDuration: isFirstLoad ? 0 : 800,
-  
+
   fit: true,
-  padding: 50,
+  padding: 60,
   nodeDimensionsIncludeLabels: true,
-  randomize: !hasSavedPositions, 
-  
-  idealEdgeLength: (_edge: EdgeSingular) => 100,
-  nodeRepulsion: (_node: NodeSingular) => 4500,
+  randomize: !hasSavedPositions,
+
+  // расстояния побольше: иконки устройств не должны сливаться
+  idealEdgeLength: (_edge: EdgeSingular) => 130,
+  nodeRepulsion: (_node: NodeSingular) => 7500,
   gravity: 0.25,
-  
+
   nestingFactor: 0.1,
   packComponents: true,
+  tilingPaddingVertical: 45,
+  tilingPaddingHorizontal: 45,
 });

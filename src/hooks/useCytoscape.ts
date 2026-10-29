@@ -2,7 +2,7 @@ import type { Core, ElementDefinition } from 'cytoscape'
 import { useEffect, useRef } from 'react'
 import createCytoscapeInstance from '../ utils/createCytoscapeInstance'
 import type { ApiConnection, ApiNode } from '../types/topology'
-import useCytoscapeElements from './useCytoscapeElements'
+import useCytoscapeElements, { trackExpandCollapseState } from './useCytoscapeElements'
 import registerCytoscapeEvents from './useCytoscapeEvents'
 
 interface UseCytoscapeProps {
@@ -10,9 +10,10 @@ interface UseCytoscapeProps {
   elements: ElementDefinition[]
   theme?: 'light' | 'dark'
   onElementClick?: (element: ApiNode | ApiConnection | null) => void
+  focusNodeId?: string | null
 }
 
-export const useCytoscape = ({ containerRef, elements, theme = 'light', onElementClick }: UseCytoscapeProps) => {
+export const useCytoscape = ({ containerRef, elements, theme = 'light', onElementClick, focusNodeId }: UseCytoscapeProps) => {
   const cyRef = useRef<Core | null>(null)
   const onElementClickRef = useRef<((el: ApiNode | ApiConnection | null) => void) | null>(null)
   useEffect(() => { onElementClickRef.current = onElementClick ?? null }, [onElementClick])
@@ -23,6 +24,7 @@ export const useCytoscape = ({ containerRef, elements, theme = 'light', onElemen
 
     const cy = createCytoscapeInstance(container, theme)
     cyRef.current = cy
+    trackExpandCollapseState(cy)
 
     const unregister = registerCytoscapeEvents(cy, onElementClickRef)
 
@@ -50,7 +52,7 @@ export const useCytoscape = ({ containerRef, elements, theme = 'light', onElemen
     return () => { mounted = false }
   }, [theme])
 
-  const { isGraphReady } = useCytoscapeElements(cyRef, elements)
+  const { isGraphReady } = useCytoscapeElements(cyRef, elements, focusNodeId)
 
   return { cyRef, isGraphReady }
 }

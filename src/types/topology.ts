@@ -1,4 +1,12 @@
 export type NodeState = 'ok' | 'warning' | 'error';
+export type ConnectionState = 'ok' | 'warning' | 'error';
+
+export interface ProblemInfo {
+  title: string;
+  description?: string;
+  detectedAt?: number;
+  source?: string;
+}
 
 export interface ApiNode {
   id: string;
@@ -6,6 +14,7 @@ export interface ApiNode {
   type: string;
   parent?: string;
   state: NodeState;
+  problem?: ProblemInfo;
 }
 
 export interface ApiConnection {
@@ -13,6 +22,8 @@ export interface ApiConnection {
   source: string;
   target: string;
   type: string;
+  state?: ConnectionState;
+  problem?: ProblemInfo;
 }
 
 export interface TopologyResponse {

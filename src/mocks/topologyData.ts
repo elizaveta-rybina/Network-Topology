@@ -8,6 +8,7 @@ export const mockTopology: TopologyResponse = {
     { id: 'rack-a3', label: 'Стойка A3 (виртуализация)', type: 'rack', state: 'ok' },
     { id: 'rack-b1', label: 'Стойка B1 (хранение)', type: 'rack', state: 'ok' },
     { id: 'rack-b2', label: 'Стойка B2 (резерв)', type: 'rack', state: 'ok' },
+    { id: 'spb', label: 'Узел СПб', type: 'zone', state: 'ok' },
 
     { id: 'inet-gw-1', label: 'Интернет-шлюз 1', type: 'gateway', state: 'ok' },
     { id: 'inet-gw-2', label: 'Интернет-шлюз 2', type: 'gateway', state: 'ok' },
@@ -31,7 +32,18 @@ export const mockTopology: TopologyResponse = {
 
     { id: 'acc-sw-a2', label: 'Access Switch A2', type: 'switch', state: 'ok', parent: 'rack-a2' },
     { id: 'srv-web-1', label: 'Web Server 1', type: 'server', state: 'ok', parent: 'rack-a2' },
-    { id: 'srv-web-2', label: 'Web Server 2', type: 'server', state: 'error', parent: 'rack-a2' },
+    {
+      id: 'srv-web-2',
+      label: 'Web Server 2',
+      type: 'server',
+      state: 'error',
+      parent: 'rack-a2',
+      problem: {
+        title: 'Health-check не отвечает',
+        description: 'HTTP-проверка сервиса не проходит более 3 минут.',
+        source: 'Мониторинг HTTP',
+      },
+    },
     { id: 'srv-web-3', label: 'Web Server 3', type: 'server', state: 'ok', parent: 'rack-a2' },
     { id: 'srv-auth-1', label: 'Auth Server 1', type: 'server', state: 'ok', parent: 'rack-a2' },
     { id: 'monitoring', label: 'Zabbix-мониторинг', type: 'monitoring', state: 'ok', parent: 'rack-a2' },
@@ -51,13 +63,30 @@ export const mockTopology: TopologyResponse = {
     { id: 'san-sw-1', label: 'SAN Switch 1', type: 'switch', state: 'ok', parent: 'rack-b1' },
     { id: 'san-sw-2', label: 'SAN Switch 2', type: 'switch', state: 'ok', parent: 'rack-b1' },
     { id: 'storage-1', label: 'СХД TATLIN.M5', type: 'storage', state: 'ok', parent: 'rack-b1' },
-    { id: 'storage-2', label: 'СХД TATLIN.S5', type: 'storage', state: 'error', parent: 'rack-b1' },
+    {
+      id: 'storage-2',
+      label: 'СХД TATLIN.S5',
+      type: 'storage',
+      state: 'error',
+      parent: 'rack-b1',
+      problem: {
+        title: 'Недоступен storage-контроллер',
+        description: 'Потеряна связь с контроллером хранения.',
+        source: 'Система хранения',
+      },
+    },
     { id: 'backup-1', label: 'Backup Server 1', type: 'backup', state: 'ok', parent: 'rack-b1' },
 
     { id: 'acc-sw-b2', label: 'Access Switch B2', type: 'switch', state: 'ok', parent: 'rack-b2' },
     { id: 'storage-3', label: 'СХД TATLIN.M100', type: 'storage', state: 'ok', parent: 'rack-b2' },
     { id: 'backup-2', label: 'Backup Server 2', type: 'backup', state: 'ok', parent: 'rack-b2' },
     { id: 'tape-lib-1', label: 'Ленточная библиотека', type: 'tape', state: 'ok', parent: 'rack-b2' },
+
+    // --- Узел СПб (сеть организации «Бета») ---
+    { id: 'spb-rtr-1', label: 'СПб Router 1', type: 'router', state: 'ok', parent: 'spb' },
+    { id: 'spb-sw-1', label: 'СПб Switch 1', type: 'switch', state: 'ok', parent: 'spb' },
+    { id: 'spb-srv-1', label: 'СПб App Server', type: 'server', state: 'ok', parent: 'spb' },
+    { id: 'spb-srv-2', label: 'СПб Web Server', type: 'server', state: 'warning', parent: 'spb' },
   ],
 
   connections: [
@@ -70,7 +99,14 @@ export const mockTopology: TopologyResponse = {
     { id: 'e07', source: 'fw-2', target: 'srv-proxy-1', type: 'arrow' },
     { id: 'e08', source: 'srv-proxy-1', target: 'srv-web-3', type: 'arrow' },
     { id: 'e09', source: 'lb-1', target: 'srv-web-1', type: 'arrow' },
-    { id: 'e10', source: 'lb-1', target: 'srv-web-2', type: 'arrow' },
+    {
+      id: 'e10',
+      source: 'lb-1',
+      target: 'srv-web-2',
+      type: 'arrow',
+      state: 'error',
+      problem: { title: 'Нет ответа от backend', source: 'Load Balancer 1' },
+    },
     { id: 'e11', source: 'lb-2', target: 'srv-web-3', type: 'arrow' },
 
     { id: 'e12', source: 'fw-1', target: 'core-rtr-1', type: 'arrow' },
@@ -127,7 +163,7 @@ export const mockTopology: TopologyResponse = {
     { id: 'e57', source: 'san-sw-1', target: 'san-sw-2', type: 'line' },
     { id: 'e58', source: 'acc-sw-b1', target: 'backup-1', type: 'arrow' },
     { id: 'e59', source: 'san-sw-1', target: 'storage-1', type: 'arrow' },
-    { id: 'e60', source: 'san-sw-2', target: 'storage-2', type: 'arrow' },
+    { id: 'e60', source: 'san-sw-2', target: 'storage-2', type: 'arrow', state: 'error', problem: { title: 'Канал хранения недоступен', source: 'SAN Switch 2' } },
     { id: 'e61', source: 'san-sw-1', target: 'storage-2', type: 'arrow' },
     { id: 'e62', source: 'srv-db-1', target: 'san-sw-1', type: 'vee' },
     { id: 'e63', source: 'srv-db-2', target: 'san-sw-2', type: 'vee' },
@@ -148,5 +184,11 @@ export const mockTopology: TopologyResponse = {
     { id: 'e76', source: 'monitoring', target: 'fw-1', type: 'circle' },
     { id: 'e77', source: 'srv-app-1', target: 'log-1', type: 'dashed' },
     { id: 'e78', source: 'srv-web-1', target: 'log-1', type: 'dashed' },
+
+    // Узел СПб
+    { id: 'e79', source: 'core-rtr-2', target: 'spb-rtr-1', type: 'dashed' },
+    { id: 'e80', source: 'spb-rtr-1', target: 'spb-sw-1', type: 'arrow' },
+    { id: 'e81', source: 'spb-sw-1', target: 'spb-srv-1', type: 'arrow' },
+    { id: 'e82', source: 'spb-sw-1', target: 'spb-srv-2', type: 'arrow' },
   ],
 };

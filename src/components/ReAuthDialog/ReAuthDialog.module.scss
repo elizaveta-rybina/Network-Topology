@@ -1,0 +1,65 @@
+@use "../../styles/variables" as vars;
+
+.reason {
+  margin: 0;
+  font-size: 0.88rem;
+  color: vars.$text-muted;
+  line-height: 1.45;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: vars.$text-muted;
+
+  input {
+    padding: 9px 12px;
+    border: 1px solid vars.$bg-panel;
+    border-radius: 6px;
+    background-color: vars.$bg-primary;
+    color: vars.$text-primary;
+    font-size: 0.95rem;
+    outline: none;
+
+    &:focus {
+      border-color: vars.$accent-primary;
+    }
+  }
+}
+
+.error {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(224, 59, 36, 0.12);
+  color: vars.$status-error;
+  font-size: 0.85rem;
+}
+
+.submitButton {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: vars.$accent-primary;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}

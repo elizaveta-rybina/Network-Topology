@@ -3,7 +3,8 @@ import type { Core } from 'cytoscape'
 type Position = { x: number; y: number };
 type PosMap = Record<string, Position>;
 
-const STORAGE_KEY = 'topology_positions';
+// v2: сброс сохранённых позиций после перехода на иконки устройств
+const STORAGE_KEY = 'topology_positions_v2';
 
 const loadStoredPositions = (): PosMap => {
   try {

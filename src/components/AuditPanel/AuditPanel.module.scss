@@ -1,0 +1,162 @@
+@use "../../styles/variables" as vars;
+
+.error {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(224, 59, 36, 0.12);
+  color: vars.$status-error;
+  font-size: 0.85rem;
+}
+
+.notice {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(100, 163, 56, 0.14);
+  color: vars.$status-success;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.searchForm {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 6px;
+  background-color: vars.$bg-primary;
+  color: vars.$text-primary;
+  font-size: 0.88rem;
+  outline: none;
+
+  &:focus {
+    border-color: vars.$accent-primary;
+  }
+}
+
+.searchButton,
+.exportButton {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.searchButton {
+  border: none;
+  background-color: vars.$accent-primary;
+  color: #fff;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.exportButton {
+  border: 1px solid vars.$bg-panel;
+  background-color: vars.$bg-primary;
+  color: vars.$text-primary;
+
+  &:hover {
+    border-color: vars.$accent-primary;
+  }
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: vars.$text-muted;
+}
+
+.tableWrap {
+  overflow: auto;
+  max-height: 46vh;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  color: vars.$text-primary;
+
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid vars.$bg-panel;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: 0.72rem;
+    color: vars.$text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    position: sticky;
+    top: 0;
+    background-color: vars.$bg-primary;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.deniedRow {
+  background-color: rgba(224, 59, 36, 0.06);
+}
+
+.timeCell,
+.monoCell {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+}
+
+.detailsCell {
+  white-space: normal;
+  min-width: 220px;
+  color: vars.$text-muted;
+}
+
+.emptyCell {
+  text-align: center;
+  color: vars.$text-muted;
+  padding: 20px;
+}
+
+.deniedBadge,
+.allowedBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.deniedBadge {
+  background-color: rgba(224, 59, 36, 0.14);
+  color: vars.$status-error;
+}
+
+.allowedBadge {
+  background-color: rgba(100, 163, 56, 0.16);
+  color: vars.$status-success;
+}

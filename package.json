@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cytoscape": "^3.33.4",
+    "cytoscape-expand-collapse": "^4.1.1",
     "cytoscape-fcose": "^2.2.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"

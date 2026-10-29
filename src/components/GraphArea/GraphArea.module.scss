@@ -1,9 +1,53 @@
 @use "../../styles/variables" as vars;
 
 $overlay-font-size: 1.2rem;
-.graphArea { flex: 1 1 auto; position: relative; background-color: vars.$bg-primary; min-width: 0; }
+.graphArea {
+  flex: 1 1 auto;
+  position: relative;
+  background-color: vars.$bg-primary;
+  min-width: 0;
+
+  :global(.expand-collapse-canvas) {
+    z-index: 10 !important;
+  }
+}
 
 .cyContainer { position: absolute; inset: 0; outline: none; min-width: 0; }
+
+.graphLegend {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  z-index: 15;
+  display: flex;
+  gap: 14px;
+  padding: 9px 12px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 8px;
+  background: vars.$bg-primary;
+  color: vars.$text-primary;
+  font-size: .78rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .08);
+  pointer-events: none;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+}
+
+.legendOk { background: vars.$status-success; }
+.legendWarning { background: vars.$status-warning; }
+.legendError { background: vars.$status-error; }
 
 .overlay {
   position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
@@ -11,3 +55,17 @@ $overlay-font-size: 1.2rem;
 }
 
 .error { color: vars.$status-error; }
+
+.noAccessTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.noAccessText {
+  font-size: 0.92rem;
+  color: vars.$text-muted;
+  max-width: 420px;
+  text-align: center;
+  line-height: 1.5;
+}

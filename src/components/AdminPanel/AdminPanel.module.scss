@@ -1,0 +1,199 @@
+@use "../../styles/variables" as vars;
+
+.error {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(224, 59, 36, 0.12);
+  color: vars.$status-error;
+  font-size: 0.85rem;
+}
+
+.notice {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(100, 163, 56, 0.14);
+  color: vars.$status-success;
+  font-size: 0.85rem;
+}
+
+.sectionLabel {
+  font-size: 0.8rem;
+  color: vars.$text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 8px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  color: vars.$text-primary;
+
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid vars.$bg-panel;
+    vertical-align: top;
+  }
+
+  th {
+    font-size: 0.78rem;
+    color: vars.$text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.selfRow {
+  background-color: vars.$bg-secondary;
+}
+
+.userName {
+  font-weight: 600;
+}
+
+.userLogin {
+  font-size: 0.78rem;
+  color: vars.$text-muted;
+}
+
+.roleSelect {
+  padding: 6px 8px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 6px;
+  background-color: vars.$bg-primary;
+  color: vars.$text-primary;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.projectChecks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.projectCheck {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: vars.$text-primary;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    accent-color: vars.$accent-primary;
+  }
+}
+
+.createForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 8px;
+  background-color: vars.$bg-secondary;
+}
+
+.createRow {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1.4fr;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: vars.$text-muted;
+
+  input, select {
+    padding: 7px 10px;
+    border: 1px solid vars.$bg-panel;
+    border-radius: 6px;
+    background-color: vars.$bg-primary;
+    color: vars.$text-primary;
+    font-size: 0.88rem;
+    outline: none;
+
+    &:focus {
+      border-color: vars.$accent-primary;
+    }
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+}
+
+.primaryButton {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  background-color: vars.$accent-primary;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.secondaryButton {
+  padding: 9px 16px;
+  border: 1px solid vars.$bg-panel;
+  border-radius: 6px;
+  background-color: vars.$bg-primary;
+  color: vars.$text-primary;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: vars.$accent-primary;
+  }
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: vars.$text-muted;
+}
+
+.projectSegments {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.projectSegmentRow {
+  display: flex;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: vars.$text-primary;
+
+  strong {
+    min-width: 220px;
+  }
+
+  span {
+    color: vars.$text-muted;
+  }
+}

@@ -31,6 +31,90 @@ $checkbox-size: 18px;
   letter-spacing: 0.5px;
 }
 
+.incidentPanel {
+  background: vars.$bg-primary;
+  border: 1px solid vars.$bg-panel;
+  border-radius: $radius-sm;
+  padding: 12px;
+}
+
+.incidentHeader {
+  display: flex;
+  justify-content: space-between;
+  color: vars.$text-primary;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.incidentHeader strong {
+  color: vars.$status-error;
+}
+
+.incidentEmpty {
+  color: vars.$text-muted;
+  font-size: .82rem;
+}
+
+.incidentList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.incidentItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: vars.$text-primary;
+  text-align: left;
+  cursor: pointer;
+}
+
+.incidentItem:hover, .incidentItemActive {
+  background: vars.$bg-secondary;
+  border-color: vars.$accent-primary;
+}
+
+.incidentItem strong, .incidentItem small {
+  display: block;
+}
+
+.incidentItem strong { font-size: .82rem; }
+.incidentItem small { color: vars.$text-muted; margin-top: 2px; }
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  margin-top: 4px;
+  border-radius: 50%;
+}
+
+.statusError { background: vars.$status-error; }
+.statusWarning { background: vars.$status-warning; }
+
+.incidentActions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.incidentActions button {
+  border: 0;
+  background: transparent;
+  color: vars.$accent-primary;
+  text-align: left;
+  cursor: pointer;
+  font-size: .78rem;
+  padding: 3px 0;
+}
+
 .filtersContainer {
   display: flex;
   flex-direction: column;
@@ -105,6 +189,39 @@ $checkbox-size: 18px;
   }
 }
 
+.legendGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: vars.$text-primary;
+  min-width: 0;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.legendIcon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.legendHint {
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: vars.$text-muted;
+}
+
 .nodeInfoPanel {
   background-color: vars.$bg-primary;
   border: 1px solid vars.$bg-panel;
@@ -127,6 +244,19 @@ $checkbox-size: 18px;
     color: vars.$text-muted;
     font-weight: 600;
   }
+
+  .problemCallout {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 9px;
+    border-left: 3px solid vars.$status-error;
+    background: rgba(224, 59, 36, .08);
+    color: vars.$text-primary;
+    font-size: .85rem;
+  }
+
+  .problemCallout strong { color: vars.$status-error; }
 
   span {
     word-break: break-all;

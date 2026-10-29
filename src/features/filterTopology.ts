@@ -26,6 +26,7 @@ export const filterTopologyData = (
     parent: node.parent ? String(node.parent) : undefined,
     state: String(node.state),
     label: String(node.label),
+    problem: node.problem,
   })) as ApiNode[];
 
   const nodeMap = new Map<string, ApiNode>();
@@ -53,6 +54,8 @@ export const filterTopologyData = (
       source: String(conn.source),
       target: String(conn.target),
       type: String(conn.type),
+      state: conn.state ?? 'ok',
+      problem: conn.problem,
     }))
     .filter((conn) => finalNodeIds.has(conn.source) && finalNodeIds.has(conn.target));
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ApiConnection, ApiNode, TopologyFilterOptions } from '../../types/topology'
+import { getDeviceIcon, LEGEND_TYPES } from '../../styles/deviceIcons'
 import styles from './Sidebar.module.scss'
 
 const AVAILABLE_STATES = [
@@ -13,15 +14,28 @@ interface SidebarProps {
   nodesCount: number;
   filters: TopologyFilterOptions;
   onFilterChange: (newFilters: TopologyFilterOptions) => void;
-  selectedElement: ApiNode | ApiConnection | null; 
+  selectedElement: ApiNode | ApiConnection | null;
+  incidents: ApiNode[];
+  focusMode: 'all' | 'incident';
+  focusNodeId: string | null;
+  incidentRadius: 1 | 2;
+  onFocusIncident: (nodeId: string) => void;
+  onShowAll: () => void;
+  onExpandIncident: () => void;
+  scope: {
+    roleLabel: string | null;
+    orgName: string | null;
+    segmentLabels: string[];
+  };
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  isLoading, 
-  nodesCount, 
-  filters, 
+export const Sidebar: React.FC<SidebarProps> = ({
+  isLoading,
+  nodesCount,
+  filters,
   onFilterChange,
-  selectedElement
+  selectedElement,
+  scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident
 }) => {
   
   const handleStateChange = (stateValue: string, isChecked: boolean) => {
@@ -36,7 +50,58 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={styles.sidebar}>
       <div className={styles.title}>Управление</div>
-      
+
+      <div className={styles.incidentPanel}>
+        <div className={styles.incidentHeader}>
+          <span>Инциденты</span>
+          <strong>{incidents.length}</strong>
+        </div>
+        {incidents.length === 0 ? (
+          <div className={styles.incidentEmpty}>Проблем не обнаружено</div>
+        ) : (
+          <>
+            <div className={styles.incidentList}>
+              {incidents.map((node) => (
+                <button
+                  type="button"
+                  key={node.id}
+                  className={`${styles.incidentItem} ${focusNodeId === node.id ? styles.incidentItemActive : ''}`}
+                  onClick={() => onFocusIncident(node.id)}
+                >
+                  <span className={`${styles.statusDot} ${node.state === 'error' ? styles.statusError : styles.statusWarning}`} />
+                  <span>
+                    <strong>{node.label}</strong>
+                    <small>{node.problem?.title ?? (node.state === 'error' ? 'Критическая ошибка' : 'Предупреждение')}</small>
+                  </span>
+                </button>
+              ))}
+            </div>
+            <div className={styles.incidentActions}>
+              {focusMode === 'incident' && <button type="button" onClick={onExpandIncident}>Расширить область ({incidentRadius === 1 ? '2 перехода' : 'максимум'})</button>}
+              {focusMode === 'incident' && <button type="button" onClick={onShowAll}>Показать всю топологию</button>}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className={styles.filterSection}>
+        <div className={styles.filterLabel}>Область доступа</div>
+        <div className={styles.nodeInfoPanel}>
+          <div className={styles.infoRow}>
+            <strong>Роль:</strong>
+            <span>{scope.roleLabel ?? '—'}</span>
+          </div>
+          <div className={styles.infoRow}>
+            <strong>Организация:</strong>
+            <span>{scope.orgName ?? '—'}</span>
+          </div>
+          <div className={styles.infoRow}>
+            <strong>Сегменты:</strong>
+            <span>{scope.segmentLabels.length > 0 ? scope.segmentLabels.join(', ') : 'нет назначенных'}</span>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.filtersContainer}>
         
         <div className={styles.filterSection}>
@@ -60,11 +125,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         
+        <div className={styles.filterSection}>
+          <div className={styles.filterLabel}>Типы устройств</div>
+          <div className={styles.legendGrid}>
+            {LEGEND_TYPES.map((type) => {
+              const icon = getDeviceIcon(type);
+              return (
+                <div key={type} className={styles.legendItem}>
+                  <img src={icon.src} alt={icon.label} className={styles.legendIcon} />
+                  <span>{icon.label}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.legendHint}>
+            Стойки свёрнуты: двойной клик по группе или кий в её углу разворачивает содержимое
+          </div>
+        </div>
+
         {selectedElement && (
           <div className={styles.filterSection}>
             <div className={styles.filterLabel}>
               {'source' in selectedElement ? 'Информация о связи' : 'Информация об узле'}
             </div>
+
             
             <div className={styles.nodeInfoPanel}>
               <div className={styles.infoRow}>
@@ -103,6 +187,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <strong>Статус:</strong> 
                     <span>{selectedElement.state}</span>
                   </div>
+                  {selectedElement.problem && (
+                    <>
+                      <div className={styles.problemCallout}>
+                        <strong>Проблема:</strong>
+                        <span>{selectedElement.problem.title}</span>
+                      </div>
+                      {selectedElement.problem.description && (
+                        <div className={styles.infoRow}>
+                          <strong>Описание:</strong>
+                          <span>{selectedElement.problem.description}</span>
+                        </div>
+                      )}
+                      {selectedElement.problem.source && (
+                        <div className={styles.infoRow}>
+                          <strong>Источник:</strong>
+                          <span>{selectedElement.problem.source}</span>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </>
               )}
             </div>

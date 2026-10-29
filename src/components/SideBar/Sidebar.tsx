@@ -45,6 +45,8 @@ interface SidebarProps {
   onUpdateNode: (id: string, patch: Partial<ApiNode>) => Promise<void>;
   onAddConnection: (connection: ApiConnection) => Promise<void>;
   availableNodeIds: string[];
+  viewMode: 'incident' | 'hierarchy';
+  onViewModeChange: (mode: 'incident' | 'hierarchy') => void;
   scope: {
     roleLabel: string | null;
     orgName: string | null;
@@ -60,6 +62,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedElement,
   scope, incidents, focusMode, focusNodeId, incidentRadius, onFocusIncident, onShowAll, onExpandIncident, story, storyStep, onStoryStepChange,
   canEditTopology, onAddNode, onUpdateNode, onAddConnection, availableNodeIds
+  , viewMode, onViewModeChange
 }) => {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
   const [newNode, setNewNode] = useState({ id: '', label: '', type: 'server', state: 'ok' as ApiNode['state'] });
@@ -90,6 +93,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className={styles.sidebar}>
       <div className={styles.title}>Управление</div>
+
+      <div className={styles.viewModeSwitch} aria-label="Режим отображения">
+        <button type="button" className={viewMode === 'incident' ? styles.viewModeActive : ''} onClick={() => onViewModeChange('incident')}>
+          Разбор инцидента
+        </button>
+        <button type="button" className={viewMode === 'hierarchy' ? styles.viewModeActive : ''} onClick={() => onViewModeChange('hierarchy')}>
+          Иерархия сети
+        </button>
+      </div>
 
       <div className={styles.explainerPanel}>
         <div className={styles.explainerTitle}>Как читать карту</div>

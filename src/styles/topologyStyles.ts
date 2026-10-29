@@ -134,6 +134,7 @@ export const getTopologyStyles = (theme: 'light' | 'dark' = 'light'): CytoscapeS
         'arrow-scale': 0.9,
       },
     },
+    { selector: 'edge.hierarchy-view[state = "ok"]', style: { 'line-color': colors.statusSuccess, 'target-arrow-color': colors.statusSuccess } },
     { selector: 'edge[type = "arrow"], edge[type = "arrowed"]', style: { 'target-arrow-shape': 'triangle' } },
     { selector: 'edge[type = "vee"]', style: { 'target-arrow-shape': 'vee' } },
     { selector: 'edge[type = "diamond"]', style: { 'target-arrow-shape': 'diamond' } },

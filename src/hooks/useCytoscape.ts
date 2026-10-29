@@ -12,9 +12,10 @@ interface UseCytoscapeProps {
   onElementClick?: (element: ApiNode | ApiConnection | null) => void
   focusNodeId?: string | null
   highlightNodeIds?: string[]
+  hierarchyMode?: boolean
 }
 
-export const useCytoscape = ({ containerRef, elements, theme = 'light', onElementClick, focusNodeId, highlightNodeIds = [] }: UseCytoscapeProps) => {
+export const useCytoscape = ({ containerRef, elements, theme = 'light', onElementClick, focusNodeId, highlightNodeIds = [], hierarchyMode = false }: UseCytoscapeProps) => {
   const cyRef = useRef<Core | null>(null)
   const onElementClickRef = useRef<((el: ApiNode | ApiConnection | null) => void) | null>(null)
   useEffect(() => { onElementClickRef.current = onElementClick ?? null }, [onElementClick])
@@ -53,7 +54,7 @@ export const useCytoscape = ({ containerRef, elements, theme = 'light', onElemen
     return () => { mounted = false }
   }, [theme])
 
-  const { isGraphReady } = useCytoscapeElements(cyRef, elements, focusNodeId, highlightNodeIds)
+  const { isGraphReady } = useCytoscapeElements(cyRef, elements, focusNodeId, highlightNodeIds, hierarchyMode)
 
   return { cyRef, isGraphReady }
 }

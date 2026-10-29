@@ -27,6 +27,7 @@ export const TopologyDashboard = () => {
   const [isAuditPanelOpen, setIsAuditPanelOpen] = useState(false);
   const [toast, setToast] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [focusMode, setFocusMode] = useState<'all' | 'incident'>('incident');
+  const [viewMode, setViewMode] = useState<'incident' | 'hierarchy'>('incident');
   const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
   const [incidentRadius, setIncidentRadius] = useState<IncidentRadius>(1);
   const [storyStep, setStoryStep] = useState<'overview' | 'path' | 'failure' | 'backup' | 'impact'>('overview');
@@ -66,6 +67,7 @@ export const TopologyDashboard = () => {
           : storyStep === 'backup' ? data.story.backupNodeIds
             : storyStep === 'impact' ? data.story.impactNodeIds : []
       : [],
+    hierarchyMode: viewMode === 'hierarchy',
   });
 
   const { handleZoomIn, handleZoomOut } = useGraphControls(cyRef);
@@ -103,6 +105,14 @@ export const TopologyDashboard = () => {
     setIncidentRadius(1);
     setStoryStep('overview');
     setFocusMode('incident');
+    setViewMode('incident');
+    setSelectedElement(null);
+  };
+
+  const handleViewModeChange = (mode: 'incident' | 'hierarchy') => {
+    setViewMode(mode);
+    setFocusMode(mode === 'incident' ? 'incident' : 'all');
+    setStoryStep('overview');
     setSelectedElement(null);
   };
 
@@ -186,6 +196,8 @@ export const TopologyDashboard = () => {
           onUpdateNode={handleUpdateNode}
           onAddConnection={handleAddConnection}
           availableNodeIds={data?.nodes.map((node) => node.id) ?? []}
+          viewMode={viewMode}
+          onViewModeChange={handleViewModeChange}
           scope={{
             roleLabel: ROLE_LABELS[account.role],
             orgName: org?.name ?? null,
@@ -201,7 +213,7 @@ export const TopologyDashboard = () => {
           error={error ? String(error) : null}
           noAccess={accessError}
           story={data?.story}
-          showStory={focusMode === 'incident'}
+          showStory={viewMode === 'incident'}
           storyStep={storyStep}
         />
       </div>

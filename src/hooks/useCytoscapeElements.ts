@@ -43,6 +43,7 @@ export const useCytoscapeElements = (
   elements: ElementDefinition[],
   focusNodeId?: string | null,
   highlightNodeIds: string[] = [],
+  hierarchyMode = false,
 ) => {
   const [isGraphReady, setIsGraphReady] = useState(false)
   const hasRenderedOnceRef = useRef(false)
@@ -62,7 +63,7 @@ export const useCytoscapeElements = (
         cy.add(elements)
         // Полная топология начинается со свёрнутых групп. В режиме инцидента
         // все узлы области должны быть видимы сразу, иначе проблема скрывается внутри контейнера.
-        if (!focusNodeId) applyInitialCollapse(cy)
+        if (!focusNodeId && !hierarchyMode) applyInitialCollapse(cy)
         if (focusNodeId) {
           const api = cy.expandCollapse('get');
           let currentId: string | null = focusNodeId;
@@ -76,7 +77,7 @@ export const useCytoscapeElements = (
         }
         cy.nodes().forEach((node) => {
           const pos = mergedPositions[node.id()]
-          if (!focusNodeId && pos && node.visible()) node.position(pos)
+          if (!focusNodeId && !hierarchyMode && pos && node.visible()) node.position(pos)
         })
       }
     })
@@ -95,13 +96,30 @@ export const useCytoscapeElements = (
       return
     }
 
-    let needsPhysics = Boolean(focusNodeId)
+    if (hierarchyMode) cy.elements().addClass('hierarchy-view')
+
+    let needsPhysics = Boolean(focusNodeId) || hierarchyMode
     cy.nodes().forEach((node) => {
       if (!node.isParent() && !mergedPositions[node.id()]) needsPhysics = true
     })
 
     let layout: any
-    if (needsPhysics) {
+    if (hierarchyMode) {
+      layout = cy.layout({
+        name: 'breadthfirst',
+        // Реальная сеть может содержать резервные и обратные связи, поэтому
+        // граф не считается DAG. В этом режиме breadthfirst сам выбирает
+        // устойчивые корни и не пытается сортировать циклы как зависимости.
+        directed: false,
+        circle: false,
+        spacingFactor: 1.15,
+        avoidOverlap: true,
+        nodeDimensionsIncludeLabels: true,
+        fit: true,
+        padding: 45,
+        animate: false,
+      })
+    } else if (needsPhysics) {
       const isFirstLoad = Boolean(focusNodeId) || Object.keys(currentPositions).length === 0
       layout = cy.layout(getFcoseLayoutConfig(isFirstLoad, false))
     } else {
@@ -109,6 +127,10 @@ export const useCytoscapeElements = (
     }
 
     const onStop = () => {
+      if (hierarchyMode) {
+        cy.fit(cy.elements(), 45)
+        if (cy.zoom() < 0.2) cy.zoom(0.2)
+      }
       setIsGraphReady(true)
       hasRenderedOnceRef.current = true
     }
@@ -122,8 +144,9 @@ export const useCytoscapeElements = (
         layout?.off('layoutstop', onStop)
       } catch {
       }
+      cy.elements().removeClass('hierarchy-view')
     }
-  }, [cyRef, elements, focusNodeId])
+  }, [cyRef, elements, focusNodeId, hierarchyMode])
 
   useEffect(() => {
     const cy = cyRef.current
